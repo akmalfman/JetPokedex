@@ -1,0 +1,24 @@
+package com.akmj.jetpokedex.ui.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.akmj.jetpokedex.ui.home.PokemonDetailScreen
+import com.akmj.jetpokedex.ui.home.PokemonListScreen
+
+@Composable
+fun AppNavHost(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = "pokemon_list"
+    ) {
+        composable("pokemon_list") {
+            PokemonListScreen(navController)
+        }
+        composable("pokemon_detail/{name}") { backStackEntry ->
+            val name = backStackEntry.arguments?.getString("name")
+            PokemonDetailScreen(name)
+        }
+    }
+}
