@@ -287,7 +287,7 @@ data class AbilitiesItem(
 	val isHidden: Boolean? = null,
 
 	@field:SerializedName("ability")
-	val ability: Any? = null,
+	val ability: Ability? = null,
 
 	@field:SerializedName("slot")
 	val slot: Int? = null
