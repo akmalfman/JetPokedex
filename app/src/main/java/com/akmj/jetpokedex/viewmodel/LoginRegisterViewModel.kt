@@ -1,0 +1,38 @@
+package com.akmj.jetpokedex.viewmodel
+
+import android.content.Context
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import com.akmj.jetpokedex.data.local.UserDatabase
+import com.akmj.jetpokedex.domain.model.User
+import java.util.*
+
+class LoginRegisterViewModel(context: Context) : ViewModel() {
+
+    private val userDb = UserDatabase(context)
+
+    var loginState = mutableStateOf(false)
+        private set
+
+    var errorMessage = mutableStateOf<String?>(null)
+
+    fun register(username: String, email: String, password: String) {
+        val user = User(UUID.randomUUID().toString(), username, email, password)
+        val success = userDb.registerUser(user)
+        if (!success) {
+            errorMessage.value = "Email sudah terdaftar"
+        } else {
+            errorMessage.value = null
+        }
+    }
+
+    fun login(email: String, password: String) {
+        val user = userDb.loginUser(email, password)
+        if (user != null) {
+            loginState.value = true
+            errorMessage.value = null
+        } else {
+            errorMessage.value = "Email atau password salah"
+        }
+    }
+}
