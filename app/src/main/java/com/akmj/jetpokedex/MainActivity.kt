@@ -20,13 +20,25 @@ class MainActivity : ComponentActivity() {
                 val loginViewModel: LoginRegisterViewModel = viewModel(
                     factory = LoginRegisterViewModelFactory(this)
                 )
+                val sharedPref = getSharedPreferences("user_session", MODE_PRIVATE)
+                val loggedInEmail = sharedPref.getString("email", null)
+
+                val startDestination = if (loggedInEmail != null) {
+                    "home" // langsung ke home
+                } else {
+                    "login" // ke login
+                }
 
                 Surface(
                     modifier = Modifier,
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    AppNavHost(navController, loginViewModel)
+                    AppNavHost(
+                        navController = navController,
+                        loginViewModel = loginViewModel,
+                        startDestination = startDestination
+                    )
                 }
             }
         }

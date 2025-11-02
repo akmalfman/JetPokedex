@@ -1,45 +1,42 @@
 package com.akmj.jetpokedex.ui.home
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.akmj.jetpokedex.viewmodel.LoginRegisterViewModel
 
 @Composable
-fun UserProfileScreen(viewModel: LoginRegisterViewModel) {
-    val context = viewModel.getApplicationContext()
-    val sharedPref = context.getSharedPreferences("user_session", android.content.Context.MODE_PRIVATE)
-    val email = sharedPref.getString("email", null)
-
-    val user = remember(email) {
-        if (email != null) viewModel.getUserByEmail(email) else null
-    }
+fun UserProfileScreen(
+    viewModel: LoginRegisterViewModel,
+    onLogout: () -> Unit
+) {
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+    val email = sharedPref.getString("email", "Unknown")
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Profile", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Logged in as: $email",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (user != null) {
-            Text("Username: ${user.username}")
-            Text("Email: ${user.email}")
-        } else {
-            Text("No user data found.")
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(onClick = {
-            sharedPref.edit().clear().apply()
-        }) {
+        Button(
+            onClick = {
+                viewModel.logout()
+                onLogout()
+            }
+        ) {
             Text("Logout")
         }
     }

@@ -31,7 +31,15 @@ fun PokemonHomeScreen(
 
         when (selectedTab) {
             0 -> PokemonListScreen(navController = navController)
-            1 -> UserProfileScreen(viewModel = loginViewModel)
+            1 -> UserProfileScreen(
+                viewModel = loginViewModel,
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                }
+            )
         }
+
     }
 }

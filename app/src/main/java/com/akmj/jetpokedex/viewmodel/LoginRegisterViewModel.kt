@@ -4,16 +4,18 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.akmj.jetpokedex.data.local.UserDatabase
+import com.akmj.jetpokedex.data.local.UserSession
 import com.akmj.jetpokedex.domain.model.User
 import java.util.*
 
 class LoginRegisterViewModel(
-    private val context: Context
+    val context: Context
 ) : ViewModel() {
 
     private val userDb = UserDatabase(context)
+    private val session = UserSession(context) // ✅ gunakan helper class
 
-    var loginState = mutableStateOf(false)
+    var loginState = mutableStateOf(session.isLoggedIn())
         private set
 
     var errorMessage = mutableStateOf<String?>(null)
@@ -31,12 +33,7 @@ class LoginRegisterViewModel(
     fun login(email: String, password: String): User? {
         val user = userDb.loginUser(email, password)
         if (user != null) {
-            // ✅ Simpan email user ke SharedPreferences
-            val sharedPref = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
-            sharedPref.edit()
-                .putString("email", user.email)
-                .apply()
-
+            session.saveUser(user.email) // ✅ simpan session
             loginState.value = true
             errorMessage.value = null
         } else {
@@ -45,8 +42,9 @@ class LoginRegisterViewModel(
         return user
     }
 
-    fun getApplicationContext(): Context = context
-
-    fun getUserByEmail(email: String) = userDb.getUserByEmail(email)
-
+    fun logout() {
+        val sharedPref = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        sharedPref.edit().remove("email").apply()
+        loginState.value = false
+    }
 }
