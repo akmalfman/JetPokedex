@@ -5,14 +5,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.akmj.jetpokedex.ui.detail.PokemonDetailScreen
+import com.akmj.jetpokedex.ui.home.PokemonHomeScreen
 import com.akmj.jetpokedex.ui.home.PokemonListScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = "pokemon_list"
+        startDestination = "home"
     ) {
+        composable("home") {
+            PokemonHomeScreen(navController)
+        }
         composable("pokemon_list") {
             PokemonListScreen(navController)
         }
