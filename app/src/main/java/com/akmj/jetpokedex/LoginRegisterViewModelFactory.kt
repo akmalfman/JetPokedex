@@ -1,8 +1,9 @@
-package com.akmj.jetpokedex.viewmodel
+package com.akmj.jetpokedex
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.akmj.jetpokedex.viewmodel.LoginRegisterViewModel
 
 class LoginRegisterViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

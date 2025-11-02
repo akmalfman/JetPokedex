@@ -18,6 +18,8 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val errorMessage by viewModel.errorMessage
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +56,6 @@ fun RegisterScreen(
         Button(
             onClick = {
                 viewModel.register(username, email, password)
-                if (viewModel.errorMessage.value == null) onRegisterSuccess()
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -65,8 +66,15 @@ fun RegisterScreen(
             Text("Sudah punya akun? Login")
         }
 
-        viewModel.errorMessage.value?.let {
-            Text(it, color = MaterialTheme.colorScheme.error)
+        if (errorMessage != null) {
+            Text(errorMessage!!, color = MaterialTheme.colorScheme.error)
+        }
+    }
+
+    // 🔹 Pindah ke halaman login kalau register berhasil
+    LaunchedEffect(errorMessage) {
+        if (errorMessage == null && email.isNotEmpty()) {
+            onRegisterSuccess()
         }
     }
 }

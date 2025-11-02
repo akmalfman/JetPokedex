@@ -17,6 +17,9 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val loginState by viewModel.loginState
+    val errorMessage by viewModel.errorMessage
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +49,6 @@ fun LoginScreen(
         Button(
             onClick = {
                 viewModel.login(email, password)
-                if (viewModel.loginState.value) onLoginSuccess()
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -57,8 +59,15 @@ fun LoginScreen(
             Text("Belum punya akun? Daftar")
         }
 
-        viewModel.errorMessage.value?.let {
-            Text(it, color = MaterialTheme.colorScheme.error)
+        if (errorMessage != null) {
+            Text(errorMessage!!, color = MaterialTheme.colorScheme.error)
+        }
+    }
+
+    // 🔹 Observe perubahan state login — biar navigasi hanya saat login sukses
+    LaunchedEffect(loginState) {
+        if (loginState) {
+            onLoginSuccess()
         }
     }
 }

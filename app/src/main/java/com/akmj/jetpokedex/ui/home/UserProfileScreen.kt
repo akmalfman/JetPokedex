@@ -1,16 +1,23 @@
 package com.akmj.jetpokedex.ui.home
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.akmj.jetpokedex.viewmodel.LoginRegisterViewModel
 
 @Composable
-fun UserProfileScreen() {
+fun UserProfileScreen(viewModel: LoginRegisterViewModel) {
+    val context = viewModel.getApplicationContext()
+    val sharedPref = context.getSharedPreferences("user_session", android.content.Context.MODE_PRIVATE)
+    val email = sharedPref.getString("email", null)
+
+    val user = remember(email) {
+        if (email != null) viewModel.getUserByEmail(email) else null
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -18,18 +25,22 @@ fun UserProfileScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "User Profile",
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-        )
+        Text("Profile", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Nama: Akmal Fauzi Salman",
-            style = MaterialTheme.typography.bodyLarge
-        )
-        Text(
-            text = "Email: akmal@example.com",
-            style = MaterialTheme.typography.bodyLarge
-        )
+
+        if (user != null) {
+            Text("Username: ${user.username}")
+            Text("Email: ${user.email}")
+        } else {
+            Text("No user data found.")
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(onClick = {
+            sharedPref.edit().clear().apply()
+        }) {
+            Text("Logout")
+        }
     }
 }

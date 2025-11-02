@@ -7,7 +7,9 @@ import com.akmj.jetpokedex.data.local.UserDatabase
 import com.akmj.jetpokedex.domain.model.User
 import java.util.*
 
-class LoginRegisterViewModel(context: Context) : ViewModel() {
+class LoginRegisterViewModel(
+    private val context: Context
+) : ViewModel() {
 
     private val userDb = UserDatabase(context)
 
@@ -26,13 +28,25 @@ class LoginRegisterViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun login(email: String, password: String) {
+    fun login(email: String, password: String): User? {
         val user = userDb.loginUser(email, password)
         if (user != null) {
+            // ✅ Simpan email user ke SharedPreferences
+            val sharedPref = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+            sharedPref.edit()
+                .putString("email", user.email)
+                .apply()
+
             loginState.value = true
             errorMessage.value = null
         } else {
             errorMessage.value = "Email atau password salah"
         }
+        return user
     }
+
+    fun getApplicationContext(): Context = context
+
+    fun getUserByEmail(email: String) = userDb.getUserByEmail(email)
+
 }

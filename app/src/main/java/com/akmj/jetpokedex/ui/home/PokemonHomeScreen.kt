@@ -5,9 +5,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.akmj.jetpokedex.viewmodel.LoginRegisterViewModel
 
 @Composable
-fun PokemonHomeScreen(navController: NavHostController) {
+fun PokemonHomeScreen(
+    navController: NavHostController,
+    loginViewModel: LoginRegisterViewModel
+) {
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("Pokémon List", "Profile")
 
@@ -27,7 +31,7 @@ fun PokemonHomeScreen(navController: NavHostController) {
 
         when (selectedTab) {
             0 -> PokemonListScreen(navController = navController)
-            1 -> UserProfileScreen()
+            1 -> UserProfileScreen(viewModel = loginViewModel)
         }
     }
 }
