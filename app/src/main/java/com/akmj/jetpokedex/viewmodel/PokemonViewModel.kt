@@ -17,6 +17,9 @@ class PokemonViewModel : ViewModel() {
     private var currentPage = 0
     private val pageSize = 10
 
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -37,6 +40,21 @@ class PokemonViewModel : ViewModel() {
                 }
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+
+    fun onSearchQueryChange(query: String) {
+        _searchQuery.value = query
+    }
+
+    fun getFilteredList(): List<ResultsItem> {
+        val query = _searchQuery.value.lowercase()
+        return if (query.isBlank()) {
+            _pokemonList.value
+        } else {
+            _pokemonList.value.filter {
+                it.name?.contains(query, ignoreCase = true) == true
             }
         }
     }
