@@ -21,14 +21,35 @@ class LoginRegisterViewModel(
     var errorMessage = mutableStateOf<String?>(null)
 
     fun register(username: String, email: String, password: String) {
+        // Cek apakah ada field kosong
+        if (username.isBlank() || email.isBlank() || password.isBlank()) {
+            errorMessage.value = "Semua kolom wajib diisi"
+            return
+        }
+
+        // Validasi email sederhana
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            errorMessage.value = "Format email tidak valid"
+            return
+        }
+
+        // Minimal panjang password
+        if (password.length < 6) {
+            errorMessage.value = "Password minimal 6 karakter"
+            return
+        }
+
+        // Cek apakah email sudah terdaftar
         val user = User(UUID.randomUUID().toString(), username, email, password)
         val success = userDb.registerUser(user)
+
         if (!success) {
             errorMessage.value = "Email sudah terdaftar"
         } else {
             errorMessage.value = null
         }
     }
+
 
     fun login(email: String, password: String): User? {
         val user = userDb.loginUser(email, password)
