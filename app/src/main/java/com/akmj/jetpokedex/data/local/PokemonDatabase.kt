@@ -1,9 +1,9 @@
 package com.akmj.jetpokedex.data.local
 
 import android.content.Context
-import com.akmj.jetpokedex.domain.model.AbilitiesItem
-import com.akmj.jetpokedex.domain.model.Ability
-import com.akmj.jetpokedex.domain.model.ResultsItem
+import com.akmj.jetpokedex.data.remote.response.AbilitiesItem
+import com.akmj.jetpokedex.data.remote.response.Ability
+import com.akmj.jetpokedex.data.remote.response.ResultsItem
 import com.couchbase.lite.*
 
 class PokemonDatabase(context: Context) {

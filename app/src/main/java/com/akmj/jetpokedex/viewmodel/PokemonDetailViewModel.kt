@@ -1,20 +1,33 @@
 package com.akmj.jetpokedex.viewmodel
 
-import android.content.Context
+// ❗️ HAPUS: import android.content.Context
+// ❗️ HAPUS: import com.akmj.jetpokedex.data.repository.PokemonRepositoryImpl
+// ❗️ HAPUS: import com.akmj.jetpokedex.data.remote.response.AbilitiesItem
+
+// ❗️ IMPORT BARU: Entitas Domain Murni
+import com.akmj.jetpokedex.domain.model.PokemonDetail
+// ❗️ IMPORT BARU: Use Case
+import com.akmj.jetpokedex.domain.usecase.GetPokemonDetailUseCase
+// ❗️ IMPORT BARU: Hilt
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.akmj.jetpokedex.data.repository.PokemonRepository
-import com.akmj.jetpokedex.domain.model.AbilitiesItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class PokemonDetailViewModel(context: Context) : ViewModel() {
+@HiltViewModel
+class PokemonDetailViewModel @Inject constructor(
+    private val getPokemonDetailUseCase: GetPokemonDetailUseCase
+) : ViewModel() {
 
-    private val repository = PokemonRepository(context)
+    // ❗️ HAPUS: private val repository = PokemonRepositoryImpl(context)
 
-    private val _abilityList = MutableStateFlow<List<AbilitiesItem>>(emptyList())
-    val abilityList: StateFlow<List<AbilitiesItem>> = _abilityList
+    // ❗️ GANTI TIPE DATA: Dari List DTO ke satu Entitas Domain
+    private val _pokemonDetail = MutableStateFlow<PokemonDetail?>(null)
+    val pokemonDetail: StateFlow<PokemonDetail?> = _pokemonDetail
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -25,23 +38,25 @@ class PokemonDetailViewModel(context: Context) : ViewModel() {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
-    fun fetchAbilityList(name: String) {
+    // ❗️ Ganti nama fungsi agar lebih jelas
+    fun fetchPokemonDetail(name: String) {
+        // Jangan fetch jika sudah ada (bisa dihapus jika Anda ingin 'refresh' tiap kali)
+        if (_pokemonDetail.value != null && _pokemonDetail.value?.name == name) return
+
         _isLoading.value = true
         _errorMessage.value = null
+        _pokemonDetail.value = null // Kosongkan dulu
 
         viewModelScope.launch {
             try {
-                val result = repository.getPokemonDetail(name)
-                _abilityList.value = result
+                // ❗️ PANGGIL USE CASE
+                val result = getPokemonDetailUseCase(name)
 
-                if (result.isEmpty()) {
-                    _errorMessage.value = "Tidak ada data abilities"
-                    _isOfflineMode.value = true
-                } else {
-                    _isOfflineMode.value = false
-                }
+                _pokemonDetail.value = result // Simpan seluruh objek detail
+                _isOfflineMode.value = false
+
             } catch (e: Exception) {
-                _errorMessage.value = "Mode Offline - Menampilkan data tersimpan"
+                _errorMessage.value = "Mode Offline - Gagal mengambil detail"
                 _isOfflineMode.value = true
             } finally {
                 _isLoading.value = false

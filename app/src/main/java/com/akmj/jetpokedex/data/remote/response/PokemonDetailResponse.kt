@@ -1,67 +1,67 @@
-package com.akmj.jetpokedex.domain.model
+package com.akmj.jetpokedex.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 
 data class PokemonDetailResponse(
 
-	@field:SerializedName("cries")
+    @field:SerializedName("cries")
 	val cries: Cries? = null,
 
-	@field:SerializedName("location_area_encounters")
+    @field:SerializedName("location_area_encounters")
 	val locationAreaEncounters: String? = null,
 
-	@field:SerializedName("types")
+    @field:SerializedName("types")
 	val types: List<TypesItem?>? = null,
 
-	@field:SerializedName("base_experience")
+    @field:SerializedName("base_experience")
 	val baseExperience: Int? = null,
 
-	@field:SerializedName("held_items")
+    @field:SerializedName("held_items")
 	val heldItems: List<HeldItemsItem?>? = null,
 
-	@field:SerializedName("weight")
+    @field:SerializedName("weight")
 	val weight: Int? = null,
 
-	@field:SerializedName("is_default")
+    @field:SerializedName("is_default")
 	val isDefault: Boolean? = null,
 
-	@field:SerializedName("past_types")
+    @field:SerializedName("past_types")
 	val pastTypes: List<Any?>? = null,
 
-	@field:SerializedName("sprites")
+    @field:SerializedName("sprites")
 	val sprites: Sprites? = null,
 
-	@field:SerializedName("past_abilities")
+    @field:SerializedName("past_abilities")
 	val pastAbilities: List<PastAbilitiesItem?>? = null,
 
-	@field:SerializedName("abilities")
+    @field:SerializedName("abilities")
 	val abilities: List<AbilitiesItem?>? = null,
 
-	@field:SerializedName("game_indices")
+    @field:SerializedName("game_indices")
 	val gameIndices: List<GameIndicesItem?>? = null,
 
-	@field:SerializedName("species")
+    @field:SerializedName("species")
 	val species: Species? = null,
 
-	@field:SerializedName("stats")
+    @field:SerializedName("stats")
 	val stats: List<StatsItem?>? = null,
 
-	@field:SerializedName("moves")
+    @field:SerializedName("moves")
 	val moves: List<MovesItem?>? = null,
 
-	@field:SerializedName("name")
+    @field:SerializedName("name")
 	val name: String? = null,
 
-	@field:SerializedName("id")
+    @field:SerializedName("id")
 	val id: Int? = null,
 
-	@field:SerializedName("forms")
+    @field:SerializedName("forms")
 	val forms: List<FormsItem?>? = null,
 
-	@field:SerializedName("height")
+    @field:SerializedName("height")
 	val height: Int? = null,
 
-	@field:SerializedName("order")
+    @field:SerializedName("order")
 	val order: Int? = null
 )
 
@@ -109,13 +109,13 @@ data class Type(
 
 data class StatsItem(
 
-	@field:SerializedName("stat")
+    @field:SerializedName("stat")
 	val stat: Stat? = null,
 
-	@field:SerializedName("base_stat")
+    @field:SerializedName("base_stat")
 	val baseStat: Int? = null,
 
-	@field:SerializedName("effort")
+    @field:SerializedName("effort")
 	val effort: Int? = null
 )
 
@@ -175,19 +175,19 @@ data class GameIndicesItem(
 
 data class PastAbilitiesItem(
 
-	@field:SerializedName("abilities")
+    @field:SerializedName("abilities")
 	val abilities: List<AbilitiesItem?>? = null,
 
-	@field:SerializedName("generation")
+    @field:SerializedName("generation")
 	val generation: Generation? = null
 )
 
 data class GenerationI(
 
-	@field:SerializedName("yellow")
+    @field:SerializedName("yellow")
 	val yellow: Yellow? = null,
 
-	@field:SerializedName("red-blue")
+    @field:SerializedName("red-blue")
 	val redBlue: RedBlue? = null
 )
 
@@ -238,28 +238,28 @@ data class DiamondPearl(
 
 data class GenerationIv(
 
-	@field:SerializedName("platinum")
+    @field:SerializedName("platinum")
 	val platinum: Platinum? = null,
 
-	@field:SerializedName("diamond-pearl")
+    @field:SerializedName("diamond-pearl")
 	val diamondPearl: DiamondPearl? = null,
 
-	@field:SerializedName("heartgold-soulsilver")
+    @field:SerializedName("heartgold-soulsilver")
 	val heartgoldSoulsilver: HeartgoldSoulsilver? = null
 )
 
 data class VersionGroupDetailsItem(
 
-	@field:SerializedName("level_learned_at")
+    @field:SerializedName("level_learned_at")
 	val levelLearnedAt: Int? = null,
 
-	@field:SerializedName("version_group")
+    @field:SerializedName("version_group")
 	val versionGroup: VersionGroup? = null,
 
-	@field:SerializedName("move_learn_method")
+    @field:SerializedName("move_learn_method")
 	val moveLearnMethod: MoveLearnMethod? = null,
 
-	@field:SerializedName("order")
+    @field:SerializedName("order")
 	val order: Any? = null
 )
 
@@ -283,13 +283,13 @@ data class Gold(
 
 data class AbilitiesItem(
 
-	@field:SerializedName("is_hidden")
+    @field:SerializedName("is_hidden")
 	val isHidden: Boolean? = null,
 
-	@field:SerializedName("ability")
+    @field:SerializedName("ability")
 	val ability: Ability? = null,
 
-	@field:SerializedName("slot")
+    @field:SerializedName("slot")
 	val slot: Int? = null
 )
 
@@ -313,34 +313,34 @@ data class Silver(
 
 data class Sprites(
 
-	@field:SerializedName("back_shiny_female")
+    @field:SerializedName("back_shiny_female")
 	val backShinyFemale: String? = null,
 
-	@field:SerializedName("back_female")
+    @field:SerializedName("back_female")
 	val backFemale: String? = null,
 
-	@field:SerializedName("other")
+    @field:SerializedName("other")
 	val other: Other? = null,
 
-	@field:SerializedName("back_default")
+    @field:SerializedName("back_default")
 	val backDefault: String? = null,
 
-	@field:SerializedName("front_shiny_female")
+    @field:SerializedName("front_shiny_female")
 	val frontShinyFemale: String? = null,
 
-	@field:SerializedName("front_default")
+    @field:SerializedName("front_default")
 	val frontDefault: String? = null,
 
-	@field:SerializedName("versions")
+    @field:SerializedName("versions")
 	val versions: Versions? = null,
 
-	@field:SerializedName("front_female")
+    @field:SerializedName("front_female")
 	val frontFemale: String? = null,
 
-	@field:SerializedName("back_shiny")
+    @field:SerializedName("back_shiny")
 	val backShiny: String? = null,
 
-	@field:SerializedName("front_shiny")
+    @field:SerializedName("front_shiny")
 	val frontShiny: String? = null
 )
 
@@ -451,22 +451,22 @@ data class Stat(
 
 data class GenerationVi(
 
-	@field:SerializedName("omegaruby-alphasapphire")
+    @field:SerializedName("omegaruby-alphasapphire")
 	val omegarubyAlphasapphire: OmegarubyAlphasapphire? = null,
 
-	@field:SerializedName("x-y")
+    @field:SerializedName("x-y")
 	val xY: XY? = null
 )
 
 data class GenerationIi(
 
-	@field:SerializedName("gold")
+    @field:SerializedName("gold")
 	val gold: Gold? = null,
 
-	@field:SerializedName("crystal")
+    @field:SerializedName("crystal")
 	val crystal: Crystal? = null,
 
-	@field:SerializedName("silver")
+    @field:SerializedName("silver")
 	val silver: Silver? = null
 )
 
@@ -481,34 +481,34 @@ data class Ability(
 
 data class VersionDetailsItem(
 
-	@field:SerializedName("version")
+    @field:SerializedName("version")
 	val version: Version? = null,
 
-	@field:SerializedName("rarity")
+    @field:SerializedName("rarity")
 	val rarity: Int? = null
 )
 
 data class GenerationVii(
 
-	@field:SerializedName("icons")
+    @field:SerializedName("icons")
 	val icons: Icons? = null,
 
-	@field:SerializedName("ultra-sun-ultra-moon")
+    @field:SerializedName("ultra-sun-ultra-moon")
 	val ultraSunUltraMoon: UltraSunUltraMoon? = null
 )
 
 data class Other(
 
-	@field:SerializedName("dream_world")
+    @field:SerializedName("dream_world")
 	val dreamWorld: DreamWorld? = null,
 
-	@field:SerializedName("showdown")
+    @field:SerializedName("showdown")
 	val showdown: Showdown? = null,
 
-	@field:SerializedName("official-artwork")
+    @field:SerializedName("official-artwork")
 	val officialArtwork: OfficialArtwork? = null,
 
-	@field:SerializedName("home")
+    @field:SerializedName("home")
 	val home: Home? = null
 )
 
@@ -592,31 +592,31 @@ data class Crystal(
 
 data class BlackWhite(
 
-	@field:SerializedName("back_shiny_female")
+    @field:SerializedName("back_shiny_female")
 	val backShinyFemale: String? = null,
 
-	@field:SerializedName("back_female")
+    @field:SerializedName("back_female")
 	val backFemale: String? = null,
 
-	@field:SerializedName("back_default")
+    @field:SerializedName("back_default")
 	val backDefault: String? = null,
 
-	@field:SerializedName("front_shiny_female")
+    @field:SerializedName("front_shiny_female")
 	val frontShinyFemale: String? = null,
 
-	@field:SerializedName("front_default")
+    @field:SerializedName("front_default")
 	val frontDefault: String? = null,
 
-	@field:SerializedName("animated")
+    @field:SerializedName("animated")
 	val animated: Animated? = null,
 
-	@field:SerializedName("front_female")
+    @field:SerializedName("front_female")
 	val frontFemale: String? = null,
 
-	@field:SerializedName("back_shiny")
+    @field:SerializedName("back_shiny")
 	val backShiny: String? = null,
 
-	@field:SerializedName("front_shiny")
+    @field:SerializedName("front_shiny")
 	val frontShiny: String? = null
 )
 
@@ -703,19 +703,19 @@ data class Item(
 
 data class HeldItemsItem(
 
-	@field:SerializedName("item")
+    @field:SerializedName("item")
 	val item: Item? = null,
 
-	@field:SerializedName("version_details")
+    @field:SerializedName("version_details")
 	val versionDetails: List<VersionDetailsItem?>? = null
 )
 
 data class MovesItem(
 
-	@field:SerializedName("version_group_details")
+    @field:SerializedName("version_group_details")
 	val versionGroupDetails: List<VersionGroupDetailsItem?>? = null,
 
-	@field:SerializedName("move")
+    @field:SerializedName("move")
 	val move: Move? = null
 )
 
@@ -766,13 +766,13 @@ data class Emerald(
 
 data class GenerationIii(
 
-	@field:SerializedName("firered-leafgreen")
+    @field:SerializedName("firered-leafgreen")
 	val fireredLeafgreen: FireredLeafgreen? = null,
 
-	@field:SerializedName("ruby-sapphire")
+    @field:SerializedName("ruby-sapphire")
 	val rubySapphire: RubySapphire? = null,
 
-	@field:SerializedName("emerald")
+    @field:SerializedName("emerald")
 	val emerald: Emerald? = null
 )
 
@@ -787,27 +787,27 @@ data class Cries(
 
 data class Versions(
 
-	@field:SerializedName("generation-iii")
+    @field:SerializedName("generation-iii")
 	val generationIii: GenerationIii? = null,
 
-	@field:SerializedName("generation-ii")
+    @field:SerializedName("generation-ii")
 	val generationIi: GenerationIi? = null,
 
-	@field:SerializedName("generation-v")
+    @field:SerializedName("generation-v")
 	val generationV: GenerationV? = null,
 
-	@field:SerializedName("generation-iv")
+    @field:SerializedName("generation-iv")
 	val generationIv: GenerationIv? = null,
 
-	@field:SerializedName("generation-vii")
+    @field:SerializedName("generation-vii")
 	val generationVii: GenerationVii? = null,
 
-	@field:SerializedName("generation-i")
+    @field:SerializedName("generation-i")
 	val generationI: GenerationI? = null,
 
-	@field:SerializedName("generation-viii")
+    @field:SerializedName("generation-viii")
 	val generationViii: GenerationViii? = null,
 
-	@field:SerializedName("generation-vi")
+    @field:SerializedName("generation-vi")
 	val generationVi: GenerationVi? = null
 )

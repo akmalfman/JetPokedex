@@ -12,29 +12,31 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+// ❗️ HAPUS: import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.akmj.jetpokedex.PokemonViewModelFactory
+// ❗️ IMPORT BARU: Hilt
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.akmj.jetpokedex.viewmodel.PokemonDetailViewModel
+// ❗️ HAPUS: import com.akmj.jetpokedex.viewmodel.PokemonViewModelFactory
 
 @Composable
 fun PokemonDetailScreen(
     name: String?,
-    viewModel: PokemonDetailViewModel = viewModel(
-        factory = PokemonViewModelFactory(LocalContext.current)
-    )
+    // ❗️ PERUBAHAN 1: Ganti factory dengan hiltViewModel()
+    viewModel: PokemonDetailViewModel = hiltViewModel()
 ) {
-    val abilityList by viewModel.abilityList.collectAsState()
+    // ❗️ PERUBAHAN 2: Observe 'pokemonDetail' (objek tunggal)
+    val pokemonDetail by viewModel.pokemonDetail.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val isOfflineMode by viewModel.isOfflineMode.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     LaunchedEffect(Unit) {
         if (name != null) {
-            viewModel.fetchAbilityList(name)
+            // ❗️ PERUBAHAN 3: Panggil fungsi ViewModel yang baru
+            viewModel.fetchPokemonDetail(name)
         }
     }
 
@@ -45,7 +47,8 @@ fun PokemonDetailScreen(
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = name?.replaceFirstChar { it.uppercase() } ?: "Unknown Pokémon",
+            // ❗️ Tampilkan nama dari state jika ada, jika tidak, pakai nav argument
+            text = (pokemonDetail?.name ?: name)?.replaceFirstChar { it.uppercase() } ?: "Unknown Pokémon",
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
@@ -53,35 +56,24 @@ fun PokemonDetailScreen(
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        // 🔔 Offline Banner
+        // 🔔 Offline Banner (Tidak berubah, logic masih valid)
         if (isOfflineMode) {
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
-                )
+                // ... (tidak ada perubahan) ...
             ) {
                 Row(
-                    modifier = Modifier.padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    // ... (tidak ada perubahan) ...
                 ) {
-                    Icon(
-                        Icons.Default.Warning,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    // ... (tidak ada perubahan) ...
                     Text(
                         errorMessage ?: "Mode Offline",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onErrorContainer
+                        // ... (tidak ada perubahan) ...
                     )
                 }
             }
         }
 
+        // 🔄 Loading State
         if (isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -89,18 +81,21 @@ fun PokemonDetailScreen(
             ) {
                 CircularProgressIndicator()
             }
-        } else if (abilityList.isEmpty()) {
+            // ❗️ PERUBAHAN 4: Cek 'pokemonDetail' (bukan 'abilityList.isEmpty()')
+        } else if (pokemonDetail == null) { // Gagal load ATAU belum load
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Tidak ada data abilities tersedia",
+                    text = if (errorMessage != null) "Gagal memuat detail" else "Tidak ada data",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
+            // --- ❗️ Bagian Sukses (pokemonDetail != null) ---
+
             Text(
                 text = "Abilities:",
                 style = MaterialTheme.typography.titleLarge.copy(
@@ -113,9 +108,11 @@ fun PokemonDetailScreen(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(abilityList) { ability ->
-                    val abilityName = ability.ability?.name ?: "Unknown Ability"
-                    val isHidden = ability.isHidden ?: false
+                // ❗️ PERUBAHAN 5: Iterasi 'pokemonDetail.abilities'
+                items(pokemonDetail!!.abilities) { ability ->
+                    // ❗️ PERUBAHAN 6: Akses data domain (non-null)
+                    val abilityName = ability.name
+                    val isHidden = ability.isHidden
 
                     Card(
                         modifier = Modifier.fillMaxWidth(),

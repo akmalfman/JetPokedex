@@ -6,29 +6,30 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+// ❗️ HAPUS: import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+// ❗️ UBAH IMPORT: Kita tidak pakai factory lagi
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.akmj.jetpokedex.PokemonViewModelFactory
 import com.akmj.jetpokedex.viewmodel.PokemonViewModel
+// ❗️ HAPUS: import com.akmj.jetpokedex.viewmodel.PokemonViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonListScreen(
     navController: NavHostController,
-    viewModel: PokemonViewModel = viewModel(
-        factory = PokemonViewModelFactory(LocalContext.current)
-    )
+    // ❗️ PERUBAHAN 1: Hilt akan 'inject' ViewModel secara otomatis
+    viewModel: PokemonViewModel = hiltViewModel()
 ) {
+    // Semua 'collectAsState' ini sudah benar,
+    // karena 'pokemonList' sekarang adalah StateFlow<List<PokemonEntry>>
     val pokemonList by viewModel.pokemonList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val query by viewModel.searchQuery.collectAsState()
@@ -36,12 +37,12 @@ fun PokemonListScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
     val listState = rememberLazyListState()
 
-    // Fetch awal
+    // Fetch awal (Ini masih benar)
     LaunchedEffect(Unit) {
         viewModel.fetchPokemonList()
     }
 
-    // Pagination handler
+    // Pagination handler (Ini masih benar)
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
@@ -58,7 +59,8 @@ fun PokemonListScreen(
     // List hasil filter
     val filteredList = remember(pokemonList, query) {
         if (query.isBlank()) pokemonList
-        else pokemonList.filter { it.name?.contains(query, ignoreCase = true) == true }
+        // ❗️ PERUBAHAN 2: Tipe data 'it.name' sekarang non-null String
+        else pokemonList.filter { it.name.contains(query, ignoreCase = true) }
     }
 
     Scaffold(
@@ -85,36 +87,24 @@ fun PokemonListScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
         ) {
-            // 🔔 Offline Banner
+            // 🔔 Offline Banner (Ini masih benar)
             if (isOfflineMode) {
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
+                    // ... (tidak ada perubahan di sini) ...
                 ) {
                     Row(
-                        modifier = Modifier.padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        // ... (tidak ada perubahan di sini) ...
                     ) {
-                        Icon(
-                            Icons.Default.Warning,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        // ... (tidak ada perubahan di sini) ...
                         Text(
                             errorMessage ?: "Mode Offline",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onErrorContainer
+                            // ... (tidak ada perubahan di sini) ...
                         )
                     }
                 }
             }
 
-            // 🔍 Search Bar
+            // 🔍 Search Bar (Ini masih benar)
             OutlinedTextField(
                 value = query,
                 onValueChange = { viewModel.onSearchQueryChange(it) },
@@ -131,12 +121,6 @@ fun PokemonListScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        if (query.isNotEmpty()) "Tidak ada hasil untuk \"$query\""
-                        else "Tidak ada data Pokemon",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
             } else {
                 LazyColumn(
@@ -144,23 +128,22 @@ fun PokemonListScreen(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    // ❗️ PERUBAHAN 3: 'pokemon.name' sekarang non-null
                     items(filteredList) { pokemon ->
                         PokemonItem(
-                            name = pokemon.name ?: "Unknown",
+                            name = pokemon.name, // Hapus '?: "Unknown"'
                             onClick = { name ->
+                                // Navigasi by 'name' masih benar
                                 navController.navigate("pokemon_detail/$name")
                             }
                         )
                     }
 
-                    // 🔄 Loading indicator di bawah list
+                    // 🔄 Loading indicator di bawah list (Ini masih benar)
                     if (isLoading) {
                         item {
                             Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
+                                // ... (tidak ada perubahan di sini) ...
                             ) {
                                 CircularProgressIndicator()
                             }

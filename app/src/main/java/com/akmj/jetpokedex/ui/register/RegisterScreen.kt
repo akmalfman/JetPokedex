@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.akmj.jetpokedex.viewmodel.LoginRegisterViewModel
+import com.akmj.jetpokedex.viewmodel.UiEvent
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun RegisterScreen(
@@ -18,7 +20,20 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    // ❗️ Ambil error dari ViewModel (ini sudah benar)
     val errorMessage by viewModel.errorMessage
+
+    // ❗️ PERUBAHAN 1: Buat 'observer' untuk event dari ViewModel
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEvent.RegisterSuccess -> {
+                    onRegisterSuccess()
+                }
+                // Anda bisa tambahkan 'when' lain jika ada event lain
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -31,30 +46,44 @@ fun RegisterScreen(
 
         OutlinedTextField(
             value = username,
-            onValueChange = { username = it },
+            // ❗️ PERUBAHAN 2: Bersihkan error saat mengetik
+            onValueChange = {
+                username = it
+                viewModel.clearError()
+            },
             label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = errorMessage != null // Error dari ViewModel
         )
 
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                viewModel.clearError()
+            },
             label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = errorMessage != null
         )
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                viewModel.clearError()
+            },
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            isError = errorMessage != null
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
+                // ❗️ Tombol hanya memanggil ViewModel (ini sudah benar)
                 viewModel.register(username, email, password)
             },
             modifier = Modifier.fillMaxWidth()
@@ -66,15 +95,11 @@ fun RegisterScreen(
             Text("Sudah punya akun? Login")
         }
 
-        if (errorMessage != null) {
-            Text(errorMessage!!, color = MaterialTheme.colorScheme.error)
+        // ❗️ Tampilkan error (ini sudah benar)
+        errorMessage?.let {
+            Text(it, color = MaterialTheme.colorScheme.error)
         }
     }
 
-    // 🔹 Pindah ke halaman login kalau register berhasil
-    LaunchedEffect(errorMessage) {
-        if (errorMessage == null && email.isNotEmpty()) {
-            onRegisterSuccess()
-        }
-    }
+    // ❗️ PERUBAHAN 3: Hapus LaunchedEffect(errorMessage) yang buggy
 }

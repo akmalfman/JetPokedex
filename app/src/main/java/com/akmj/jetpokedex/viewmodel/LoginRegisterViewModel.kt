@@ -1,71 +1,106 @@
 package com.akmj.jetpokedex.viewmodel
 
-import android.content.Context
+// ❗️ HAPUS: import android.content.Context
+// ❗️ HAPUS: import com.akmj.jetpokedex.data.local.UserDatabase
+// ❗️ HAPUS: import com.akmj.jetpokedex.data.local.UserSession
+// ❗️ HAPUS: import com.akmj.jetpokedex.domain.model.User
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.akmj.jetpokedex.data.local.UserDatabase
-import com.akmj.jetpokedex.data.local.UserSession
-import com.akmj.jetpokedex.domain.model.User
-import java.util.*
+import androidx.lifecycle.viewModelScope
+// ❗️ IMPORT BARU: Use Cases
+import com.akmj.jetpokedex.domain.usecase.CheckLoginStatusUseCase
+import com.akmj.jetpokedex.domain.usecase.GetLoggedInEmailUseCase
+import com.akmj.jetpokedex.domain.usecase.LoginUseCase
+import com.akmj.jetpokedex.domain.usecase.LogoutUseCase
+import com.akmj.jetpokedex.domain.usecase.RegisterUseCase
+// ❗️ IMPORT BARU: AuthResult Wrapper
+import com.akmj.jetpokedex.domain.util.AuthResult
+// ❗️ IMPORT BARU: Hilt
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginRegisterViewModel(
-    val context: Context
+sealed class UiEvent {
+    data object RegisterSuccess : UiEvent()
+    // Anda bisa tambahkan event lain di sini jika perlu, misal:
+    // data class ShowSnackbar(val message: String) : UiEvent()
+}
+
+// ❗️ ANOTASI BARU
+@HiltViewModel
+// ❗️ CONSTRUCTOR BARU: Hilt akan 'menyuntikkan' semua Use Cases
+class LoginRegisterViewModel @Inject constructor(
+    private val registerUseCase: RegisterUseCase,
+    private val loginUseCase: LoginUseCase,
+    private val logoutUseCase: LogoutUseCase,
+    private val checkLoginStatusUseCase: CheckLoginStatusUseCase,
+    private val getLoggedInEmailUseCase: GetLoggedInEmailUseCase
 ) : ViewModel() {
 
-    private val userDb = UserDatabase(context)
-    private val session = UserSession(context) // ✅ gunakan helper class
+    // ❗️ HAPUS: val userDb = UserDatabase(context)
+    // ❗️ HAPUS: val session = UserSession(context)
 
-    var loginState = mutableStateOf(session.isLoggedIn())
+    // ❗️ Inisialisasi state dari Use Case. Bersih!
+    var loginState = mutableStateOf(checkLoginStatusUseCase())
+        private set
+
+    // ❗️ STATE BARU: Ambil email menggunakan Use Case
+    var userEmail = mutableStateOf(getLoggedInEmailUseCase() ?: "Unknown")
         private set
 
     var errorMessage = mutableStateOf<String?>(null)
+        private set // ❗️ Ubah ini menjadi 'private set'
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
 
     fun register(username: String, email: String, password: String) {
-        // Cek apakah ada field kosong
-        if (username.isBlank() || email.isBlank() || password.isBlank()) {
-            errorMessage.value = "Semua kolom wajib diisi"
-            return
-        }
-
-        // Validasi email sederhana
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            errorMessage.value = "Format email tidak valid"
-            return
-        }
-
-        // Minimal panjang password
-        if (password.length < 6) {
-            errorMessage.value = "Password minimal 6 karakter"
-            return
-        }
-
-        // Cek apakah email sudah terdaftar
-        val user = User(UUID.randomUUID().toString(), username, email, password)
-        val success = userDb.registerUser(user)
-
-        if (!success) {
-            errorMessage.value = "Email sudah terdaftar"
-        } else {
-            errorMessage.value = null
+        viewModelScope.launch {
+            when (val result = registerUseCase(username, email, password)) {
+                is AuthResult.Success -> {
+                    errorMessage.value = null
+                    // ❗️ KIRIM EVENT SUKSES KE UI
+                    _eventFlow.emit(UiEvent.RegisterSuccess)
+                }
+                is AuthResult.Error -> {
+                    errorMessage.value = result.message
+                }
+            }
         }
     }
 
-
-    fun login(email: String, password: String): User? {
-        val user = userDb.loginUser(email, password)
-        if (user != null) {
-            session.saveUser(user.email) // ✅ simpan session
-            loginState.value = true
-            errorMessage.value = null
-        } else {
-            errorMessage.value = "Email atau password salah"
+    // ❗️ Fungsi ini tidak perlu mengembalikan User lagi
+    fun login(email: String, password: String) {
+        viewModelScope.launch {
+            // ❗️ Panggil Use Case, yang juga menangani 'saveSession'
+            when (val result = loginUseCase(email, password)) {
+                is AuthResult.Success -> {
+                    loginState.value = true
+                    errorMessage.value = null
+                }
+                is AuthResult.Error -> {
+                    errorMessage.value = result.message
+                }
+            }
         }
-        return user
     }
 
     fun logout() {
-        val sharedPref = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
-        sharedPref.edit().remove("email").apply()
-        loginState.value = false
+        viewModelScope.launch {
+            logoutUseCase()
+            loginState.value = false
+            userEmail.value = "Unknown" // Reset email state
+        }
+    }
+    /**
+     * ❗️ TAMBAHKAN FUNGSI INI
+     * Untuk dipanggil dari UI saat user mulai mengetik
+     */
+    fun clearError() {
+        errorMessage.value = null
     }
 }

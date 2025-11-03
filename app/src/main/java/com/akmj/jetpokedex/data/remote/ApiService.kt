@@ -1,7 +1,7 @@
 package com.akmj.jetpokedex.data.remote
 
-import com.akmj.jetpokedex.domain.model.PokemonDetailResponse
-import com.akmj.jetpokedex.domain.model.PokemonListResponse
+import com.akmj.jetpokedex.data.remote.response.PokemonDetailResponse
+import com.akmj.jetpokedex.data.remote.response.PokemonListResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

@@ -16,7 +16,21 @@ fun LoginScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var localError by remember { mutableStateOf<String?>(null) }
+
+    // ❗️ HAPUS: localError. Kita HANYA percaya pada ViewModel
+    // val localError by remember { mutableStateOf<String?>(null) }
+
+    // ❗️ Ambil state dari ViewModel
+    val loginState by remember { viewModel.loginState }
+    val errorMessage by remember { viewModel.errorMessage }
+
+    // ❗️ INI BAGIAN PENTINGNYA
+    // Kita 'observe' loginState. Jika berubah jadi true, kita navigasi.
+    LaunchedEffect(loginState) {
+        if (loginState) {
+            onLoginSuccess()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -31,42 +45,35 @@ fun LoginScreen(
             value = email,
             onValueChange = {
                 email = it
-                localError = null
+                viewModel.clearError() // ❗️ Bersihkan error
             },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
-            isError = localError != null && email.isBlank()
+            // ❗️ Error hanya dari ViewModel
+            isError = errorMessage != null
         )
 
         OutlinedTextField(
             value = password,
             onValueChange = {
                 password = it
-                localError = null
+                viewModel.clearError() // ❗️ Bersihkan error
             },
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            isError = localError != null && password.isBlank()
+            // ❗️ Error hanya dari ViewModel
+            isError = errorMessage != null
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                when {
-                    email.isBlank() || password.isBlank() -> {
-                        localError = "Email dan password tidak boleh kosong"
-                    }
-                    else -> {
-                        viewModel.login(email, password)
-                        if (viewModel.loginState.value) {
-                            onLoginSuccess()
-                        } else {
-                            localError = viewModel.errorMessage.value
-                        }
-                    }
-                }
+                // ❗️ PERUBAHAN LOGIKA
+                // Tombol ini HANYA memberi tahu ViewModel
+                // Kita tidak cek 'loginState' di sini lagi
+                viewModel.login(email, password)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -77,9 +84,8 @@ fun LoginScreen(
             Text("Belum punya akun? Daftar")
         }
 
-        // tampilkan pesan error
-        val globalError = localError ?: viewModel.errorMessage.value
-        globalError?.let {
+        // ❗️ Tampilkan pesan error HANYA dari ViewModel
+        errorMessage?.let {
             Spacer(modifier = Modifier.height(8.dp))
             Text(it, color = MaterialTheme.colorScheme.error)
         }

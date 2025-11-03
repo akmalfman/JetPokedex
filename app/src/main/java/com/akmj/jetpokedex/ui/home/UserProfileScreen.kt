@@ -1,12 +1,12 @@
 package com.akmj.jetpokedex.ui.home
 
-import android.content.Context
+// ❗️ HAPUS: import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+// ❗️ HAPUS: import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.akmj.jetpokedex.viewmodel.LoginRegisterViewModel
 
@@ -15,9 +15,10 @@ fun UserProfileScreen(
     viewModel: LoginRegisterViewModel,
     onLogout: () -> Unit
 ) {
-    val context = LocalContext.current
-    val sharedPref = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
-    val email = sharedPref.getString("email", "Unknown")
+    // ❗️ HAPUS SEMUA LOGIC 'Context' DAN 'SharedPreferences'
+
+    // ❗️ Ambil email langsung dari ViewModel State
+    val email by remember { viewModel.userEmail }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -33,6 +34,7 @@ fun UserProfileScreen(
 
         Button(
             onClick = {
+                // Panggilan ke ViewModel ini sudah benar
                 viewModel.logout()
                 onLogout()
             }

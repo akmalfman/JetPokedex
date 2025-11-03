@@ -1,4 +1,4 @@
-package com.akmj.jetpokedex.domain.model
+package com.akmj.jetpokedex.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 

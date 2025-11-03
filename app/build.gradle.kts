@@ -1,8 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("kapt")
+    alias(libs.plugins.hilt.android)
 }
-
+hilt {
+    enableAggregatingTask = false
+}
 android {
     namespace = "com.akmj.jetpokedex"
     compileSdk = 34
@@ -30,11 +34,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        // ❗️ Turunkan ke 1.8 untuk kompatibilitas Kapt
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "21"
+        // ❗️ Samakan jvmTarget
+        jvmTarget = "1.8"
     }
 
     buildFeatures {
@@ -74,4 +80,8 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+    kapt(libs.javapoet)
 }
