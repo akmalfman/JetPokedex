@@ -12,14 +12,6 @@ class UserSession(context: Context) {
             .apply()
     }
 
-    fun getUserEmail(): String? {
-        return sharedPref.getString("email", null)
-    }
-
-    fun clearSession() {
-        sharedPref.edit().clear().apply()
-    }
-
     fun isLoggedIn(): Boolean {
         return sharedPref.contains("email")
     }

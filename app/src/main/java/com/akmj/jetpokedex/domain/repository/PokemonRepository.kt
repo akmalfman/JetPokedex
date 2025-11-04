@@ -13,23 +13,13 @@ import com.akmj.jetpokedex.domain.model.PokemonPage
  */
 interface PokemonRepository {
 
-    /** 🔹 Ambil satu halaman daftar Pokemon */
     suspend fun getPokemonList(offset: Int, limit: Int): PokemonPage
 
-    /** 🔹 Ambil detail spesifik seekor Pokemon */
     suspend fun getPokemonDetail(name: String): PokemonDetail
 
-    /** 🔹 Search Pokemon dari data yang ada */
     suspend fun searchPokemon(query: String): List<PokemonEntry>
 
-    /** 🔹 Cek apakah ada data offline */
     fun hasOfflineData(): Boolean
 
-    /** 🔹 Hapus cache dan download ulang */
     suspend fun refreshData()
-
-    // Catatan: Jika getPokemonList, getPokemonDetail, atau searchPokemon
-    // bisa gagal (misal: API error & tidak ada cache),
-    // kita bisa bungkus return type-nya dengan Result wrapper,
-    // tapi untuk sekarang kita buat sederhana dulu.
 }

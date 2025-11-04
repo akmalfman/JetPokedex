@@ -6,7 +6,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-// ❗️ HAPUS: import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.akmj.jetpokedex.viewmodel.LoginRegisterViewModel
 
@@ -15,9 +14,6 @@ fun UserProfileScreen(
     viewModel: LoginRegisterViewModel,
     onLogout: () -> Unit
 ) {
-    // ❗️ HAPUS SEMUA LOGIC 'Context' DAN 'SharedPreferences'
-
-    // ❗️ Ambil email langsung dari ViewModel State
     val email by remember { viewModel.userEmail }
 
     Column(
@@ -34,7 +30,6 @@ fun UserProfileScreen(
 
         Button(
             onClick = {
-                // Panggilan ke ViewModel ini sudah benar
                 viewModel.logout()
                 onLogout()
             }

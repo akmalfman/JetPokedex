@@ -14,38 +14,29 @@ import com.akmj.jetpokedex.domain.repository.PokemonRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-// ❗️ PERHATIKAN: Sekarang kita implementasi interface
 class PokemonRepositoryImpl(private val context: Context) : PokemonRepository {
 
     private val pokemonDb = PokemonDatabase(context)
 
-    /** 🔹 Ambil Pokemon List dengan strategi offline-first */
-    // ❗️ Perhatikan 'override' dan return type 'PokemonPage'
     override suspend fun getPokemonList(offset: Int, limit: Int): PokemonPage {
         return withContext(Dispatchers.IO) {
             try {
-                // Coba ambil dari API
                 val response = ApiConfig.apiService.getPokemonList(offset = offset, limit = limit)
                 val results = response.results?.filterNotNull() ?: emptyList()
 
-                // Simpan DTO ke local database
                 if (results.isNotEmpty()) {
                     pokemonDb.savePokemonList(results)
                 }
-
-                // ❗️ Kembalikan Entitas Domain MURNI (hasil mapping)
                 response.toPokemonPage()
 
             } catch (e: Exception) {
-                // Jika gagal (offline), ambil DTO dari local database
                 e.printStackTrace()
                 val resultsFromDb = pokemonDb.getPokemonList(limit = limit, offset = offset)
 
-                // ❗️ Mapping DTO dari DB ke Entitas Domain
                 val entries = resultsFromDb.map { it.toPokemonEntry() }
                 PokemonPage(
-                    count = 0, // DB kita tidak menyimpan count
-                    next = null, // DB kita tidak menyimpan 'next'
+                    count = 0,
+                    next = null,
                     pokemonList = entries
                 )
             }

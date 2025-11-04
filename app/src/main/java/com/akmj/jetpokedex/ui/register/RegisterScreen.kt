@@ -20,17 +20,14 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // ❗️ Ambil error dari ViewModel (ini sudah benar)
     val errorMessage by viewModel.errorMessage
 
-    // ❗️ PERUBAHAN 1: Buat 'observer' untuk event dari ViewModel
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEvent.RegisterSuccess -> {
                     onRegisterSuccess()
                 }
-                // Anda bisa tambahkan 'when' lain jika ada event lain
             }
         }
     }
@@ -46,14 +43,13 @@ fun RegisterScreen(
 
         OutlinedTextField(
             value = username,
-            // ❗️ PERUBAHAN 2: Bersihkan error saat mengetik
             onValueChange = {
                 username = it
                 viewModel.clearError()
             },
             label = { Text("Username") },
             modifier = Modifier.fillMaxWidth(),
-            isError = errorMessage != null // Error dari ViewModel
+            isError = errorMessage != null
         )
 
         OutlinedTextField(
@@ -83,7 +79,6 @@ fun RegisterScreen(
 
         Button(
             onClick = {
-                // ❗️ Tombol hanya memanggil ViewModel (ini sudah benar)
                 viewModel.register(username, email, password)
             },
             modifier = Modifier.fillMaxWidth()
@@ -95,11 +90,8 @@ fun RegisterScreen(
             Text("Sudah punya akun? Login")
         }
 
-        // ❗️ Tampilkan error (ini sudah benar)
         errorMessage?.let {
             Text(it, color = MaterialTheme.colorScheme.error)
         }
     }
-
-    // ❗️ PERUBAHAN 3: Hapus LaunchedEffect(errorMessage) yang buggy
 }

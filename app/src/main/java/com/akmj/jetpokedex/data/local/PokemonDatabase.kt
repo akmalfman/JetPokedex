@@ -10,7 +10,6 @@ class PokemonDatabase(context: Context) {
 
     private val database = Database("pokemon", DatabaseConfiguration())
 
-    /** 🔹 Simpan list Pokemon ke local database */
     fun savePokemonList(pokemonList: List<ResultsItem>) {
         try {
             pokemonList.forEach { pokemon ->
@@ -26,7 +25,6 @@ class PokemonDatabase(context: Context) {
         }
     }
 
-    /** 🔹 Ambil list Pokemon dari local database */
     fun getPokemonList(limit: Int = 10, offset: Int = 0): List<ResultsItem> {
         val query = QueryBuilder
             .select(SelectResult.all())
@@ -45,7 +43,6 @@ class PokemonDatabase(context: Context) {
         }
     }
 
-    /** 🔹 Cari Pokemon berdasarkan nama */
     fun searchPokemon(query: String): List<ResultsItem> {
         val searchQuery = QueryBuilder
             .select(SelectResult.all())
@@ -67,7 +64,6 @@ class PokemonDatabase(context: Context) {
         }
     }
 
-    /** 🔹 Simpan detail Pokemon (abilities) */
     fun savePokemonDetail(name: String, abilities: List<AbilitiesItem>) {
         val doc = MutableDocument("detail_$name")
         val abilitiesArray = MutableArray()
@@ -90,7 +86,6 @@ class PokemonDatabase(context: Context) {
         database.save(doc)
     }
 
-    /** 🔹 Ambil detail Pokemon (abilities) dari local */
     fun getPokemonDetail(name: String): List<AbilitiesItem>? {
         val doc = database.getDocument("detail_$name") ?: return null
 
@@ -116,7 +111,6 @@ class PokemonDatabase(context: Context) {
         return abilities
     }
 
-    /** 🔹 Cek apakah ada data Pokemon di local */
     fun hasPokemonData(): Boolean {
         try {
             val query = QueryBuilder
@@ -132,7 +126,6 @@ class PokemonDatabase(context: Context) {
         }
     }
 
-    /** 🔹 Hapus semua data Pokemon (untuk refresh) */
     fun clearAllPokemon() {
         try {
             val query = QueryBuilder

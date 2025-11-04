@@ -9,7 +9,6 @@ class UserDatabase(context: Context) {
 
     private val database = Database("users", DatabaseConfiguration())
 
-    /** 🔹 Register user baru */
     fun registerUser(user: User): Boolean {
         if (getUserByEmail(user.email) != null) return false
 
@@ -23,7 +22,6 @@ class UserDatabase(context: Context) {
         return true
     }
 
-    /** 🔹 Login (cek email + password) */
     fun loginUser(email: String, password: String): User? {
         val query = QueryBuilder
             .select(SelectResult.all())
@@ -45,7 +43,6 @@ class UserDatabase(context: Context) {
         )
     }
 
-    /** 🔹 Cek apakah email sudah terdaftar */
     fun getUserByEmail(email: String): User? {
         val query = QueryBuilder
             .select(SelectResult.all())

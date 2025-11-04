@@ -25,34 +25,24 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class) // Kita buat semua ini 'Singleton' (hidup 1x)
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
-    // --- Petunjuk 1: Cara membuat Context ---
-    // (Diperlukan oleh PokemonRepositoryImpl)
     @Provides
     @Singleton
     fun provideContext(@ApplicationContext context: Context): Context {
         return context
     }
 
-    // --- Petunjuk 2: Cara membuat PokemonRepository (Interface) ---
-    // (Diperlukan oleh Use Cases)
     @Provides
     @Singleton
     fun providePokemonRepository(context: Context): PokemonRepository {
-        // Hilt tahu cara 'provideContext' dari Petunjuk 1
-        // Di sinilah kita bilang: "Kalau minta Interface, kasih Implementasi ini"
         return PokemonRepositoryImpl(context)
     }
-
-    // --- Petunjuk 3: Cara membuat Use Cases ---
-    // (Diperlukan oleh ViewModels)
 
     @Provides
     @Singleton
     fun provideGetPokemonListUseCase(repository: PokemonRepository): GetPokemonListUseCase {
-        // Hilt tahu cara 'providePokemonRepository' dari Petunjuk 2
         return GetPokemonListUseCase(repository)
     }
 
@@ -80,27 +70,17 @@ object AppModule {
         return RefreshDataUseCase(repository)
     }
 
-    // --- (Tambahkan kode ini di dalam AppModule) ---
-
-    // --- Petunjuk 4: Cara membuat UserDatabase & UserSession ---
-    // (Dibutuhkan oleh UserRepositoryImpl)
-
     @Provides
     @Singleton
     fun provideUserDatabase(@ApplicationContext context: Context): UserDatabase {
-        // Hilt sudah tahu cara 'provideContext' dari Petunjuk 1
         return UserDatabase(context)
     }
 
     @Provides
     @Singleton
     fun provideUserSession(@ApplicationContext context: Context): UserSession {
-        // Hilt juga tahu cara 'provideContext'
         return UserSession(context)
     }
-
-    // --- Petunjuk 5: Cara membuat UserRepository (Interface) ---
-    // (Dibutuhkan oleh Use Cases Autentikasi)
 
     @Provides
     @Singleton
@@ -108,18 +88,12 @@ object AppModule {
         userDb: UserDatabase,
         session: UserSession
     ): UserRepository {
-        // Hilt tahu cara membuat 'userDb' dan 'session' dari Petunjuk 4
-        // Di sinilah kita bilang: "Kalau ada yang minta UserRepository, kasih UserRepositoryImpl"
         return UserRepositoryImpl(userDb, session)
     }
-
-    // --- Petunjuk 6: Cara membuat Use Cases Autentikasi ---
-    // (Akan dibutuhkan oleh LoginRegisterViewModel)
 
     @Provides
     @Singleton
     fun provideRegisterUseCase(repository: UserRepository): RegisterUseCase {
-        // Hilt tahu cara 'provideUserRepository' dari Petunjuk 5
         return RegisterUseCase(repository)
     }
 
@@ -141,7 +115,6 @@ object AppModule {
         return CheckLoginStatusUseCase(repository)
     }
 
-    // ... (di bawah provider CheckLoginStatusUseCase) ...
     @Provides
     @Singleton
     fun provideGetLoggedInEmailUseCase(repository: UserRepository): GetLoggedInEmailUseCase {

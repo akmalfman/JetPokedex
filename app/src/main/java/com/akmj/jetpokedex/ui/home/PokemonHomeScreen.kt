@@ -3,7 +3,6 @@ package com.akmj.jetpokedex.ui.home
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.akmj.jetpokedex.viewmodel.LoginRegisterViewModel
 

@@ -25,11 +25,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun PokemonListScreen(
     navController: NavHostController,
-    // ❗️ PERUBAHAN 1: Hilt akan 'inject' ViewModel secara otomatis
     viewModel: PokemonViewModel = hiltViewModel()
 ) {
-    // Semua 'collectAsState' ini sudah benar,
-    // karena 'pokemonList' sekarang adalah StateFlow<List<PokemonEntry>>
     val pokemonList by viewModel.pokemonList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val query by viewModel.searchQuery.collectAsState()
@@ -37,12 +34,10 @@ fun PokemonListScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
     val listState = rememberLazyListState()
 
-    // Fetch awal (Ini masih benar)
     LaunchedEffect(Unit) {
         viewModel.fetchPokemonList()
     }
 
-    // Pagination handler (Ini masih benar)
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
@@ -56,10 +51,8 @@ fun PokemonListScreen(
             }
     }
 
-    // List hasil filter
     val filteredList = remember(pokemonList, query) {
         if (query.isBlank()) pokemonList
-        // ❗️ PERUBAHAN 2: Tipe data 'it.name' sekarang non-null String
         else pokemonList.filter { it.name.contains(query, ignoreCase = true) }
     }
 
@@ -87,24 +80,21 @@ fun PokemonListScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
         ) {
-            // 🔔 Offline Banner (Ini masih benar)
             if (isOfflineMode) {
                 Card(
-                    // ... (tidak ada perubahan di sini) ...
+
                 ) {
                     Row(
-                        // ... (tidak ada perubahan di sini) ...
+
                     ) {
-                        // ... (tidak ada perubahan di sini) ...
                         Text(
                             errorMessage ?: "Mode Offline",
-                            // ... (tidak ada perubahan di sini) ...
+
                         )
                     }
                 }
             }
 
-            // 🔍 Search Bar (Ini masih benar)
             OutlinedTextField(
                 value = query,
                 onValueChange = { viewModel.onSearchQueryChange(it) },
@@ -115,7 +105,6 @@ fun PokemonListScreen(
                 singleLine = true
             )
 
-            // 🔹 List Pokémon
             if (filteredList.isEmpty() && !isLoading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -128,22 +117,19 @@ fun PokemonListScreen(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // ❗️ PERUBAHAN 3: 'pokemon.name' sekarang non-null
                     items(filteredList) { pokemon ->
                         PokemonItem(
-                            name = pokemon.name, // Hapus '?: "Unknown"'
+                            name = pokemon.name,
                             onClick = { name ->
-                                // Navigasi by 'name' masih benar
                                 navController.navigate("pokemon_detail/$name")
                             }
                         )
                     }
 
-                    // 🔄 Loading indicator di bawah list (Ini masih benar)
                     if (isLoading) {
                         item {
                             Box(
-                                // ... (tidak ada perubahan di sini) ...
+
                             ) {
                                 CircularProgressIndicator()
                             }

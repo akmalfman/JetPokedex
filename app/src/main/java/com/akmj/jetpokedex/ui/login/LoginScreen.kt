@@ -17,15 +17,9 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // ❗️ HAPUS: localError. Kita HANYA percaya pada ViewModel
-    // val localError by remember { mutableStateOf<String?>(null) }
-
-    // ❗️ Ambil state dari ViewModel
     val loginState by remember { viewModel.loginState }
     val errorMessage by remember { viewModel.errorMessage }
 
-    // ❗️ INI BAGIAN PENTINGNYA
-    // Kita 'observe' loginState. Jika berubah jadi true, kita navigasi.
     LaunchedEffect(loginState) {
         if (loginState) {
             onLoginSuccess()
@@ -45,11 +39,11 @@ fun LoginScreen(
             value = email,
             onValueChange = {
                 email = it
-                viewModel.clearError() // ❗️ Bersihkan error
+                viewModel.clearError()
             },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
-            // ❗️ Error hanya dari ViewModel
+
             isError = errorMessage != null
         )
 
@@ -57,12 +51,12 @@ fun LoginScreen(
             value = password,
             onValueChange = {
                 password = it
-                viewModel.clearError() // ❗️ Bersihkan error
+                viewModel.clearError()
             },
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            // ❗️ Error hanya dari ViewModel
+
             isError = errorMessage != null
         )
 
@@ -70,9 +64,6 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                // ❗️ PERUBAHAN LOGIKA
-                // Tombol ini HANYA memberi tahu ViewModel
-                // Kita tidak cek 'loginState' di sini lagi
                 viewModel.login(email, password)
             },
             modifier = Modifier.fillMaxWidth()
@@ -83,8 +74,7 @@ fun LoginScreen(
         TextButton(onClick = { onNavigateToRegister() }) {
             Text("Belum punya akun? Daftar")
         }
-
-        // ❗️ Tampilkan pesan error HANYA dari ViewModel
+        
         errorMessage?.let {
             Spacer(modifier = Modifier.height(8.dp))
             Text(it, color = MaterialTheme.colorScheme.error)

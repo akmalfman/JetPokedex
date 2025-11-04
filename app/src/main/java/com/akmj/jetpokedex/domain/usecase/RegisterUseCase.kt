@@ -8,7 +8,6 @@ import java.util.UUID
 class RegisterUseCase(
     private val repository: UserRepository
 ) {
-    // ❗️ SEMUA VALIDASI PINDAH KE SINI
     suspend operator fun invoke(username: String, email: String, password: String): AuthResult {
         if (username.isBlank() || email.isBlank() || password.isBlank()) {
             return AuthResult.Error("Semua kolom wajib diisi")
@@ -20,7 +19,6 @@ class RegisterUseCase(
             return AuthResult.Error("Password minimal 6 karakter")
         }
 
-        // Coba register
         val user = User(UUID.randomUUID().toString(), username, email, password)
         val success = repository.register(user)
 
