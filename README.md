@@ -8,7 +8,7 @@ Proyek ini adalah implementasi ketat dari **Clean Architecture** yang dikombinas
 
 | Layar Login | Daftar Pokemon | Detail Pokemon | Profil User |
 | :---: | :---: | :---: | :---: |
-| [Tempatkan screenshot Login] | [Tempatkan screenshot List] | [Tempatkan screenshot Detail] | [Tempatkan screenshot Profil] |
+| ![alt text](https://github.com/akmalfman/JetPokedex/blob/master/login_ss.jpg) | ![alt text](https://github.com/akmalfman/JetPokedex/blob/master/list_ss.jpg) | ![alt text](https://github.com/akmalfman/JetPokedex/blob/master/detail_ss.jpg) | ![alt text](https://github.com/akmalfman/JetPokedex/blob/master/profile_ss.jpg) |
 
 ## ✨ Fitur
 
