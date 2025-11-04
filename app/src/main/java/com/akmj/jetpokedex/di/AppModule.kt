@@ -12,6 +12,7 @@ import com.akmj.jetpokedex.domain.usecase.CheckOfflineDataUseCase
 import com.akmj.jetpokedex.domain.usecase.GetLoggedInEmailUseCase
 import com.akmj.jetpokedex.domain.usecase.GetPokemonDetailUseCase
 import com.akmj.jetpokedex.domain.usecase.GetPokemonListUseCase
+import com.akmj.jetpokedex.domain.usecase.GetUserDetailsUseCase
 import com.akmj.jetpokedex.domain.usecase.LoginUseCase
 import com.akmj.jetpokedex.domain.usecase.LogoutUseCase
 import com.akmj.jetpokedex.domain.usecase.RefreshDataUseCase
@@ -119,5 +120,14 @@ object AppModule {
     @Singleton
     fun provideGetLoggedInEmailUseCase(repository: UserRepository): GetLoggedInEmailUseCase {
         return GetLoggedInEmailUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUserDetailsUseCase(
+        repository: UserRepository,
+        getLoggedInEmailUseCase: GetLoggedInEmailUseCase
+    ): GetUserDetailsUseCase {
+        return GetUserDetailsUseCase(repository, getLoggedInEmailUseCase)
     }
 }

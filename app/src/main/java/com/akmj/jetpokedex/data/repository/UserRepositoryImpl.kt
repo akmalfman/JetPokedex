@@ -36,4 +36,8 @@ class UserRepositoryImpl @Inject constructor(
     override fun getLoggedInEmail(): String? {
         return session.getLoggedInEmail()
     }
+
+    override suspend fun getUserDetails(email: String): User? = withContext(Dispatchers.IO) {
+        userDb.getUserByEmail(email)
+    }
 }

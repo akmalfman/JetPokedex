@@ -26,7 +26,7 @@ class PokemonDetailViewModel @Inject constructor(
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
-s
+
     fun fetchPokemonDetail(name: String) {
 
         if (_pokemonDetail.value != null && _pokemonDetail.value?.name == name) return

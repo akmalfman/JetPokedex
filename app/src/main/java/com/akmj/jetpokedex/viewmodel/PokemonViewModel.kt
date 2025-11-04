@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 class PokemonViewModel @Inject constructor(
     private val getPokemonListUseCase: GetPokemonListUseCase,
     private val searchPokemonUseCase: SearchPokemonUseCase,
-    private val refreshDataUseCase: RefreshDataUseCase
 ) : ViewModel() {
 
     private val _pokemonList = MutableStateFlow<List<PokemonEntry>>(emptyList())

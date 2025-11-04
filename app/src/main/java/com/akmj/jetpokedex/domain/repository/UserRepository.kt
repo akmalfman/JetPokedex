@@ -15,4 +15,6 @@ interface UserRepository {
     fun isLoggedIn(): Boolean
 
     fun getLoggedInEmail(): String?
+
+    suspend fun getUserDetails(email: String): User?
 }
