@@ -2,7 +2,6 @@ package com.akmj.jetpokedex.viewmodel
 
 import com.akmj.jetpokedex.domain.model.PokemonEntry
 import com.akmj.jetpokedex.domain.usecase.GetPokemonListUseCase
-import com.akmj.jetpokedex.domain.usecase.RefreshDataUseCase
 import com.akmj.jetpokedex.domain.usecase.SearchPokemonUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akmj.jetpokedex.domain.usecase.CheckLoginStatusUseCase
-import com.akmj.jetpokedex.domain.usecase.GetLoggedInEmailUseCase
 import com.akmj.jetpokedex.domain.usecase.GetUserDetailsUseCase
 import com.akmj.jetpokedex.domain.usecase.LoginUseCase
 import com.akmj.jetpokedex.domain.usecase.LogoutUseCase
@@ -45,8 +44,8 @@ class LoginRegisterViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     init {
-        if (loginState.value) { // Jika statusnya logged in
-            loadUserDetails() // Ambil datanya
+        if (loginState.value) {
+            loadUserDetails()
         }
     }
 
